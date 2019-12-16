@@ -4,9 +4,16 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Sensor;
 
 class SensorController extends Controller
 {
+    private $sensor;    
+    public function __construct(Sensor $sensor)
+	{
+		$this->sensor = $sensor;
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +21,8 @@ class SensorController extends Controller
      */
     public function index()
     {
-        //
+        $data = ['data' => $this->sensor::all()];
+        return response() -> json($data);
     }
 
     /**
@@ -25,7 +33,9 @@ class SensorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $sensordata = $request->all();
+        $this->sensor->create($sensordata);
+        return response()->json(['msg'=> 'sensor criado com sucesso.'], 201);
     }
 
     /**
@@ -34,9 +44,10 @@ class SensorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Sensor $id)
     {
-        //
+        $data = ['data' => $id];
+        return response() -> json($data);
     }
 
     /**
@@ -48,7 +59,10 @@ class SensorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $sensordata = $request->all();
+        $sensor = $this->sensor->find($id);
+        $sensor->update($sensordata);
+        return response()->json(['msg'=> 'sensor atualizado com sucesso.'], 201);
     }
 
     /**
@@ -59,6 +73,7 @@ class SensorController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $id->delete();
+        return response()-> json(['data'=> ['msg'=> 'sensor: '.$id->nome. ' deletado com sucesso.']],200);
     }
 }
