@@ -12,8 +12,6 @@ class Sensor extends Model
         'nome', 'tipo'
     ];
 
-    protected $dates = ['deleted_at'];
-
     public function sensor() {
         return $this->hasMany('App\Medicao');
     }

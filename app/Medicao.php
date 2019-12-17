@@ -12,8 +12,6 @@ class Medicao extends Model
         'valor', 'data_horario','sensor_id'
     ];
 
-    protected $dates = ['deleted_at'];
-
     function sensor() {
         return $this->belongsTo('App\Sensor');
     }

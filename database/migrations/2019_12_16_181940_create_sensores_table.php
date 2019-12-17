@@ -18,7 +18,6 @@ class CreateSensoresTable extends Migration
             $table->string('nome', 100);
             $table->enum('tipo', ['temperatura', 'luminosidade', 'presenca', 'magnetico']);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

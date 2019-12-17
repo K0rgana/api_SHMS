@@ -19,7 +19,6 @@ class CreateMedicoesTable extends Migration
             $table->integer('valor');
             $table->datetime('data_horario');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
