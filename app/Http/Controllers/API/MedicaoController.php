@@ -73,7 +73,9 @@ class MedicaoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    { 
+        $validator = Validator::make($id, $request->all(),[
+        
         try {
             $medicaodata = $request->all();
             $medicao = $this->medicao->find($id);

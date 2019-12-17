@@ -35,11 +35,16 @@ class SensorController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-
-    {        $validator = Validator::make($request->all(), [
+    {   
+        $validator = Validator::make($request->all(), [
             'nome' => 'required|string|min:2|max:50',
-            'tipo' => 'in:temperatura, luminosidade, presença, magnético|required|min:8|max:10'
+            'tipo' => 'in:temperatura, luminosidade, presenca, magnetico|required|min:8|max:12'
         ]);
+        
+        if($validator->errors()){
+            return response()->json($validator->errors(), 404);
+        }
+
         try {
             $sensordata = $request->all();
             $this->sensor->create($sensordata);
@@ -66,9 +71,6 @@ class SensorController extends Controller
     	if(!$sensor) {
             return response()->json(ApiError::errorMessage('sensor não encontrado.', 404), 404);
         }
-         $validator = Validator::make($id,[
-            'id' => 'required|number'
-        ]);
         
         $data = ['data' => $sensor];
         return response() -> json($data);
@@ -88,7 +90,7 @@ class SensorController extends Controller
             'nome' => 'required|string|min:2|max:50',
             'tipo' => 'in:temperatura, luminosidade, presença, magnético|required|min:8|max:10'
             ]);
-      
+
         try {
             $sensordata = $request->all();
             $sensor = $this->sensor->find($id);
