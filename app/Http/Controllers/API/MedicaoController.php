@@ -24,7 +24,7 @@ class MedicaoController extends Controller
      */
     public function index()
     {
-        $data = ['data' => $this->medicao::all()];
+        $data = ['data' => $this->medicao::with('sensor')->get()];
         return response() -> json($data);
     }
 
@@ -58,7 +58,7 @@ class MedicaoController extends Controller
      */
     public function show(Medicao $id)
     {
-        $medicao = $this->medicao->find($id);
+        $medicao = $this->medicao::with('sensor')->find($id);
         if(!$medicao) return response()->json(ApiError::errorMessage('medicao não encontrado.', 404), 404);
         
         $data = ['data' => $medicao];
