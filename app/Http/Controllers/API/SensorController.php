@@ -4,11 +4,14 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
 use App\Sensor;
+use App\API\ApiError;
 
 class SensorController extends Controller
 {
-    private $sensor;    
+    private $sensor;
+
     public function __construct(Sensor $sensor)
 	{
 		$this->sensor = $sensor;
@@ -33,9 +36,18 @@ class SensorController extends Controller
      */
     public function store(Request $request)
     {
-        $sensordata = $request->all();
-        $this->sensor->create($sensordata);
-        return response()->json(['msg'=> 'sensor criado com sucesso.'], 201);
+        try {
+            $sensordata = $request->all();
+            $this->sensor->create($sensordata);
+
+			$return = ['data' => ['msg' => 'sensor criado com sucesso.']];
+			return response()->json($return, 201);
+		} catch (\Exception $e) {
+			if(config('app.debug')) {
+				return response()->json(ApiError::errorMessage($e->getMessage(), 500), 500);
+			}
+			return response()->json(ApiError::errorMessage('houve um erro ao realizar operação de salvar', 500),  500);
+		}
     }
 
     /**
@@ -46,7 +58,10 @@ class SensorController extends Controller
      */
     public function show(Sensor $id)
     {
-        $data = ['data' => $id];
+        $sensor = $this->sensor->find($id);
+    	if(!$sensor) return response()->json(ApiError::errorMessage('sensor não encontrado.', 404), 404);
+        
+        $data = ['data' => $sensor];
         return response() -> json($data);
     }
 
@@ -59,10 +74,19 @@ class SensorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $sensordata = $request->all();
-        $sensor = $this->sensor->find($id);
-        $sensor->update($sensordata);
-        return response()->json(['msg'=> 'sensor atualizado com sucesso.'], 201);
+        try {
+            $sensordata = $request->all();
+            $sensor = $this->sensor->find($id);
+            $sensor->update($sensordata);
+
+			$return = ['data' => ['msg' => 'sensor atualizado com sucesso.']];
+			return response()->json($return, 201);
+		} catch (\Exception $e) {
+			if(config('app.debug')) {
+				return response()->json(ApiError::errorMessage($e->getMessage(), 500),  500);
+			}
+			return response()->json(ApiError::errorMessage('houve um erro ao realizar operação de atualizar', 500), 500);
+		}
     }
 
     /**
@@ -73,7 +97,17 @@ class SensorController extends Controller
      */
     public function destroy($id)
     {
-        $id->delete();
-        return response()-> json(['data'=> ['msg'=> 'sensor: '.$id->nome. ' deletado com sucesso.']],200);
+        try {
+            
+            $id->delete();
+            return response()-> json(['data'=> ['msg'=> 'sensor: '.$id->nome. ' deletado com sucesso.']],200);
+
+		}catch (\Exception $e) {
+			if(config('app.debug')) {
+				return response()->json(ApiError::errorMessage($e->getMessage(), 500),  500);
+			}
+			return response()->json(ApiError::errorMessage('houve um erro ao realizar operação de deletar', 500),  500);
+		}
+    
     }
 }
