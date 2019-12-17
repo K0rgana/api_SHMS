@@ -58,8 +58,10 @@ class SensorController extends Controller
      */
     public function show(Sensor $id)
     {
-        $sensor = $this->sensor->find($id);
-    	if(!$sensor) return response()->json(ApiError::errorMessage('sensor não encontrado.', 404), 404);
+        $sensor = $this->sensor::with('sensor')->find($id);
+    	if(!$sensor) {
+            return response()->json(ApiError::errorMessage('sensor não encontrado.', 404), 404);
+        }
         
         $data = ['data' => $sensor];
         return response() -> json($data);
