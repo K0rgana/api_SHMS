@@ -1,6 +1,6 @@
 git-tamires:
 	git config user.name "siilvatamires"
-	git config user.email tamiresmariia27@gmail.com
+	git config user.email tamiresmaria561@gmail.com
 git-morgana:
 	git config user.name "K0rgana"
 	git config user.email anagrom1999@gmail.com
