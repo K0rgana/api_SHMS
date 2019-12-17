@@ -46,7 +46,7 @@ class SensorController extends Controller
 			if(config('app.debug')) {
 				return response()->json(ApiError::errorMessage($e->getMessage(), 500), 500);
 			}
-			return response()->json(ApiError::errorMessage('houve um erro ao realizar operação de salvar', 500),  500);
+			return response()->json(ApiError::errorMessage('erro ao realizar operação de salvar', 500),  500);
 		}
     }
 
@@ -87,7 +87,7 @@ class SensorController extends Controller
 			if(config('app.debug')) {
 				return response()->json(ApiError::errorMessage($e->getMessage(), 500),  500);
 			}
-			return response()->json(ApiError::errorMessage('houve um erro ao realizar operação de atualizar', 500), 500);
+			return response()->json(ApiError::errorMessage('erro ao realizar operação de atualizar', 500), 500);
 		}
     }
 
@@ -108,7 +108,7 @@ class SensorController extends Controller
 			if(config('app.debug')) {
 				return response()->json(ApiError::errorMessage($e->getMessage(), 500),  500);
 			}
-			return response()->json(ApiError::errorMessage('houve um erro ao realizar operação de deletar', 500),  500);
+			return response()->json(ApiError::errorMessage('erro ao realizar operação de deletar', 500),  500);
 		}
     
     }

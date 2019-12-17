@@ -46,7 +46,7 @@ class MedicaoController extends Controller
 			if(config('app.debug')) {
 				return response()->json(ApiError::errorMessage($e->getMessage(), 500), 500);
 			}
-			return response()->json(ApiError::errorMessage('houve um erro ao realizar operação de salvar', 500),  500);
+			return response()->json(ApiError::errorMessage('erro ao realizar operação de salvar', 500),  500);
 		}
     }
 
@@ -59,7 +59,7 @@ class MedicaoController extends Controller
     public function show(Medicao $id)
     {
         $medicao = $this->medicao::with('sensor')->find($id);
-        if(!$medicao) return response()->json(ApiError::errorMessage('medicao não encontrado.', 404), 404);
+        if(!$medicao) return response()->json(ApiError::errorMessage('medicao não encontrada.', 404), 404);
         
         $data = ['data' => $medicao];
         return response() -> json($data);
@@ -85,7 +85,7 @@ class MedicaoController extends Controller
 			if(config('app.debug')) {
 				return response()->json(ApiError::errorMessage($e->getMessage(), 500),  500);
 			}
-			return response()->json(ApiError::errorMessage('houve um erro ao realizar operação de atualizar', 500), 500);
+			return response()->json(ApiError::errorMessage('erro ao realizar operação de atualizar', 500), 500);
 		}
     }
 
@@ -106,7 +106,7 @@ class MedicaoController extends Controller
 			if(config('app.debug')) {
 				return response()->json(ApiError::errorMessage($e->getMessage(), 500),  500);
 			}
-			return response()->json(ApiError::errorMessage('houve um erro ao realizar operação de deletar', 500),  500);
+			return response()->json(ApiError::errorMessage('erro ao realizar operação de deletar', 500),  500);
 		}
     }
 }
