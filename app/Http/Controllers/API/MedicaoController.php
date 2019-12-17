@@ -95,12 +95,12 @@ class MedicaoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Medicao $id)
     {
         try {
             
             $id->delete();
-            return response()-> json(['data'=> ['msg'=> 'medicao: '.$id. ' deletada com sucesso.']],200);
+            return response()-> json(['data'=> ['msg'=> 'medicao: '.$id->id. ' deletada com sucesso.']],200);
 
 		}catch (\Exception $e) {
 			if(config('app.debug')) {
