@@ -61,7 +61,7 @@ class SensorController extends Controller
 			if(config('app.debug')) {
 				return response()->json(ApiError::errorMessage($e->getMessage(), 500), 500);
 			}
-			if(is_null($sensors)) {
+			if(is_null($sensor)) {
                 return response()->json(['data'=>['msg'=>'sensor não encontrado!']], 404);
             }
 		}
