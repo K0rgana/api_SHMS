@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -36,6 +38,19 @@ class MedicaoController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'sensor_id' => 'required|min:1',
+            'data_horario' => 'required|date_format:YYYY-MM-DD hh:mm:ss',
+            'valor' => Rule::requiredIf($request->Sensor()->temperatura),
+            'valor' => Rule::requiredIf($request->Sensor()->luminosidade),
+            'valor' => Rule::requiredIf($request->Sensor()->presenca),
+            'valor' => Rule::requiredIf($request->Sensor()->magnetico),
+        ]);
+
+        if(sizeof($validator->errors()) > 0 ){
+            return response()->json($validator->errors(), 404);
+        }
+
         try {
             $medicaodata = $request->all();
             $this->medicao->create($medicaodata);
@@ -74,8 +89,19 @@ class MedicaoController extends Controller
      */
     public function update(Request $request, $id)
     { 
-        $validator = Validator::make($id, $request->all(),[
-        
+        $validator = Validator::make($request->all(), [
+            'sensor_id' => 'required|min:1',
+            'data_horario' => 'required|date_format:YYYY-MM-DD hh:mm:ss',
+            'valor' => Rule::requiredIf($request->Sensor()->temperatura),
+            'valor' => Rule::requiredIf($request->Sensor()->luminosidade),
+            'valor' => Rule::requiredIf($request->Sensor()->presenca),
+            'valor' => Rule::requiredIf($request->Sensor()->magnetico),
+        ]);
+
+        if(sizeof($validator->errors()) > 0 ){
+            return response()->json($validator->errors(), 404);
+        }
+
         try {
             $medicaodata = $request->all();
             $medicao = $this->medicao->find($id);
