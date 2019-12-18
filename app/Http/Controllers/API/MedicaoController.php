@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Medicao;
+use App\Sensor;
 use App\API\ApiError;
 
 class MedicaoController extends Controller
@@ -26,12 +27,17 @@ class MedicaoController extends Controller
      */
     public function index()
     {
-        $data = ['data' => $this->medicao::with('sensor')->get()];
-        return response() -> json($data);
+        if(sizeof($this->medicao->all()) <= 0 ){
+            return response()->json(['data' => ['msg' => 'nenhum medicao cadastrado']], 404);
+        }
+        else{
+            $data = ['data' => $this->medicao::with('sensor')->get()];
+            return response() -> json($data);
+        }
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource booleanrage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -39,12 +45,12 @@ class MedicaoController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'sensor_id' => 'required|min:1',
+            'sensor_id' => 'required|numeric|min:1',
             'data_horario' => 'required|date_format:YYYY-MM-DD hh:mm:ss',
-            'valor' => Rule::requiredIf($request->Sensor()->temperatura),
-            'valor' => Rule::requiredIf($request->Sensor()->luminosidade),
-            'valor' => Rule::requiredIf($request->Sensor()->presenca),
-            'valor' => Rule::requiredIf($request->Sensor()->magnetico),
+            'valor' => 'requiredIf($request->Sensor()->tipo->temperatura)|digits_between:-100,100',
+            'valor' => 'requiredIf($request->Sensor()->tipo->luminosidade)|digits_between:0,100',
+            'valor' => 'requiredIf($request->Sensor()->tipo->presenca)|numeric|boolean',
+            'valor' => 'requiredIf($request->Sensor()->tipo->magnetico)|numeric|boolean',
         ]);
 
         if(sizeof($validator->errors()) > 0 ){
@@ -60,7 +66,10 @@ class MedicaoController extends Controller
 		} catch (\Exception $e) {
 			if(config('app.debug')) {
 				return response()->json(ApiError::errorMessage($e->getMessage(), 500), 500);
-			}
+            }
+            if(is_null($request->sensor->sensor_id)) {
+                return response()->json(['data'=>['msg'=>'sensor não encontrado']], 404);
+            }
 			return response()->json(ApiError::errorMessage('erro ao realizar operação de salvar', 500),  500);
 		}
     }
@@ -74,14 +83,14 @@ class MedicaoController extends Controller
     public function show(Medicao $id)
     {
         $medicao = $this->medicao::with('sensor')->find($id);
-        if(!$medicao) return response()->json(ApiError::errorMessage('medicao não encontrada.', 404), 404);
+        if(is_null($medicao)) return response()->json(ApiError::errorMessage('medicao não encontrada.', 404), 404);
         
-        $data = ['data' => $medicao];
+        $data = ['data' => $medicao, 201];
         return response() -> json($data);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource booleanrage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -90,12 +99,12 @@ class MedicaoController extends Controller
     public function update(Request $request, $id)
     { 
         $validator = Validator::make($request->all(), [
-            'sensor_id' => 'required|min:1',
+            'sensor_id' => 'required|numeric|min:1',
             'data_horario' => 'required|date_format:YYYY-MM-DD hh:mm:ss',
-            'valor' => Rule::requiredIf($request->Sensor()->temperatura),
-            'valor' => Rule::requiredIf($request->Sensor()->luminosidade),
-            'valor' => Rule::requiredIf($request->Sensor()->presenca),
-            'valor' => Rule::requiredIf($request->Sensor()->magnetico),
+            'valor' => 'requiredIf($request->Sensor()->tipo->temperatura)|digits_between:-100,100',
+            'valor' => 'requiredIf($request->Sensor()->tipo->luminosidade)|digits_between:0,100',
+            'valor' => 'requiredIf($request->Sensor()->tipo->presenca)|numeric|boolean',
+            'valor' => 'requiredIf($request->Sensor()->tipo->magnetico)|numeric|boolean',
         ]);
 
         if(sizeof($validator->errors()) > 0 ){
